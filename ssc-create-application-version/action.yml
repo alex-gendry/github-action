@@ -39,7 +39,7 @@ runs:
         if [ -z "$SSC_APPVERSION"] then 
           echo "Creation"
         else
-          echo "AppVersion ${SSC_APP}:${SSC_VERSION} already exists [$SSC_APPVERSION]
+          echo "AppVersion ${SSC_APP}:${SSC_VERSION} already exists [$SSC_APPVERSION]"
         fi
         echo 'SSC_APPVERSION="$SSC_APPVERSION"" >> $GITHUB_ENV
 
