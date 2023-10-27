@@ -1,0 +1,55 @@
+name: 'Create Application Verion in Software Security Center'
+description: 'Create Application Verion in Software Security Center'
+author: 'Fortify'
+runs:
+  using: composite
+  steps:
+    # Define action options
+    - run: |
+        if [ -z "$SSC_APP" ]; then
+          echo "No Application Name provided (SSC_APP). Defaulting to Repository name ${{ github.event.repository.name }}";
+          echo 'SSC_APP="${{ github.event.repository.name }}"" >> $GITHUB_ENV
+        fi
+        if [ -z "$SSC_VERSION" ]; then
+          echo "No Version Name provided (SSC_VERSION). Defaulting to Branch name ${{ github.ref_name }}"
+          echo 'SSC_VERSION="${{ github.ref_name }}"" >> $GITHUB_ENV
+        fi
+        if [ ! -z "$SSC_SOURCE_VERSION" ]; then
+            if [ -z "$SSC_APP" ]; then
+              echo "Source Version provided without Source Aplication. Defaulting to Target Application $SSC_APP";
+              echo 'SSC_SOURCE_APP="$SSC_APP"" >> $GITHUB_ENV
+            fi
+        fi
+      shell: bash
+
+    # Setup required CLIs
+    - uses: fortify-ps/github-action/setup@main
+      with:
+        export-path: false
+        fcli: action-default
+
+    # Login to SSC
+    - uses: fortify-ps/github-action/internal/ssc-login@main
+
+    # Login to SC SAST
+    - uses: fortify-ps/github-action/internal/sc-sast-login@main
+
+    - run: |
+        SSC_APPVERSION=$(fcli ssc appversion list --query="application.name=='$SSC_APP'&&name=='$SSC_VERSION'" --output=expr={id})
+        if [ -z "$SSC_APPVERSION"] then 
+          echo "Creation"
+        else
+          echo "AppVersion ${SSC_APP}:${SSC_VERSION} already exists [$SSC_APPVERSION]
+        fi
+        echo 'SSC_APPVERSION="$SSC_APPVERSION"" >> $GITHUB_ENV
+
+      shell: bash
+
+branding:
+  icon: 'shield'
+  color: 'blue'
+
+#       INPUT.ssc_app,
+#      INPUT.ssc_version,
+#      INPUT.ssc_source_app,
+#      INPUT.ssc_source_version
