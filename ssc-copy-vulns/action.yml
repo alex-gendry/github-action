@@ -1,0 +1,84 @@
+name: 'Software Security Center : Copy Vulnerabilities from one application version to another'
+description: 'Copy Vulnerabilities from one application version to another'
+author: 'Fortify'
+runs:
+  using: composite
+  steps:
+
+    # Setup required CLIs
+    - uses: fortify-ps/github-action/setup@main
+      with:
+        export-path: false
+        fcli: action-default
+
+    # Login to SSC
+    - uses: fortify-ps/github-action/internal/ssc-login@main
+    # Define action options
+    - id: define-options
+      run: |
+        get_appversion_id () {
+          echo $($FCLI_CMD ssc appversion list --query="application.name=='$1'&&name=='$2'" --output="expr={id}")
+        }
+        
+        if [[ -z "$SSC_VERSION" && -z "$SSC_APPVERSION_ID" ]]; then
+          echo "No Version Name (SSC_VERSION) or Version Id (SSC_APPVERSION_ID) provided. Defaulting to Branch name: ${GITHUB_REF_NAME}"
+          SSC_VERSION=${GITHUB_REF_NAME}
+        fi
+        
+        if [ -n "$SSC_VERSION" ]; then
+          if [ -z "$SSC_APP" ]; then
+            echo "No Application Name provided (SSC_APP). Defaulting to Repository name ${GITHUB_REPOSITORY#*/}";
+            SSC_APP=${GITHUB_REPOSITORY#*/}
+          fi
+        
+          SSC_APPVERSION_ID=$(get_appversion_id $SSC_APP  $SSC_VERSION)
+          if [[ -z "$SSC_APPVERSION_ID" ]]; then echo Error: Failed to get Id for "$SSC_APP":"$SSC_VERSION"; exit 1; fi
+      
+          echo Copying to "$SSC_APP":"$SSC_VERSION" [$SSC_APPVERSION_ID]
+        elif [[ -n "$SSC_APPVERSION_ID" ]]; then
+          echo Copying to AppVersion with id $SSC_APPVERSION_ID
+        fi
+        
+        echo "SSC_TARGET_APPVERSION_ID=$SSC_APPVERSION_ID" >> $GITHUB_OUTPUT;
+        
+        if [[ -n "$SSC_SOURCE_VERSION" ]]; then
+            if [[ -z "$SSC_SOURCE_APP" ]]; then
+              echo "Source Version provided without Source Application. Defaulting to Target Application $SSC_APP";
+              SSC_SOURCE_APP=${SSC_APP}
+            fi
+            SSC_SOURCE_APPVERSION_ID=$(get_appversion_id $SSC_SOURCE_APP  $SSC_SOURCE_VERSION)
+            if [[ -z "$SSC_SOURCE_APPVERSION_ID" ]]; then echo Error: Failed to get Id for "$SSC_SOURCE_APP":"$SSC_SOURCE_VERSION"; exit 1; fi
+            echo Copying from "$SSC_SOURCE_APP":"$SSC_SOURCE_VERSION" with Id $SSC_SOURCE_APPVERSION_ID
+        elif [[ !  -z "$SSC_SOURCE_VERSION_ID" ]]; then
+          echo Copying from AppVersion with id $SSC_APPVERSION_ID
+        else
+          echo "ERROR: SSC_SOURCE_VERSION or SSC_SOURCE_VERSION_ID environment variable must be set"; exit 1;
+        fi
+        echo "SSC_SOURCE_APPVERSION_ID=$SSC_SOURCE_APPVERSION_ID" >> $GITHUB_OUTPUT;
+
+      shell: bash
+
+    - shell: bash
+      id: ssc-copy-vulns
+      run: |
+        source_appversion_id=${{ steps.define-options.outputs.SSC_SOURCE_APPVERSION_ID }}
+        target_appversion_id=${{ steps.define-options.outputs.SSC_TARGET_APPVERSION_ID }}
+        
+        # Check if Source AppVersion Has FPRs
+        HAS_FPR=$(${FCLI_CMD} ssc artifact ls --appversion $source_appversion_id  -o expr="{true\r}")
+        if [[ -n "$HAS_FPR" ]]; then
+          RESULT=$(${FCLI_CMD} ssc appversion download-state --include-sources -f ${GITHUB_SHA:0:7}-copy-from-$source_appversion_id.fpr $source_appversion_id -o expr={__action__})
+          echo $RESULT
+          if [[ "$RESULT" != *"STATE_DOWNLOADED"* ]]; then echo Error: Failed to Download Source artifact; exit 1; fi
+      
+          ${FCLI_CMD} ssc artifact upload --appversion=$target_appversion_id -f ${GITHUB_SHA:0:7}-copy-from-$source_appversion_id.fpr --store=artifact -o expr="FPR uploaded as artifact {id} [{status}]"
+          ${FCLI_CMD} ssc artifact wait-for ::artifact:: -o expr="Artifact procesing status: {status}" --progress simple
+          ${FCLI_CMD} util var delete artifact -o expr="fcli variable cleanup"
+
+        else
+          echo Source AppVersion $source_appversion_id has no FPR. Skipping; exit 0;
+        fi
+
+branding:
+  icon: 'shield'
+  color: 'blue'
