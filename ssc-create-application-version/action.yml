@@ -1,23 +1,31 @@
 name: 'Create Application Verion in Software Security Center'
 description: 'Create Application Verion in Software Security Center'
 author: 'Fortify'
+outputs:
+  SSC_APPVERSION_ID:
+    description: "Created AppVersion Id"
+    value: ${{ steps.ssc-create-application-version.outputs.SSC_APPVERSION_ID }}
 runs:
   using: composite
   steps:
+    # TODO add feature to fcli
     # Define action options
     - run: |
         if [ -z "$SSC_APP" ]; then
-          echo "No Application Name provided (SSC_APP). Defaulting to Repository name ${{ github.event.repository.name }}";
-          echo 'SSC_APP="${{ github.event.repository.name }}"" >> $GITHUB_ENV
+          echo "No Application Name provided (SSC_APP). Defaulting to Repository name ${GITHUB_REPOSITORY#*/}";
+          SSC_APP=${GITHUB_REPOSITORY#*/}
+          echo "SSC_APP=${SSC_APP}" >> $GITHUB_ENV
         fi
         if [ -z "$SSC_VERSION" ]; then
-          echo "No Version Name provided (SSC_VERSION). Defaulting to Branch name ${{ github.ref_name }}"
-          echo 'SSC_VERSION="${{ github.ref_name }}"" >> $GITHUB_ENV
+          echo "No Version Name provided (SSC_VERSION). Defaulting to Branch name: ${GITHUB_REF_NAME}"
+          SSC_VERSION=${GITHUB_REF_NAME}
+          echo "SSC_VERSION=${SSC_VERSION}" >> $GITHUB_ENV
         fi
         if [ ! -z "$SSC_SOURCE_VERSION" ]; then
-            if [ -z "$SSC_APP" ]; then
+            if [ -z "$SSC_SOURCE_APP" ]; then
               echo "Source Version provided without Source Aplication. Defaulting to Target Application $SSC_APP";
-              echo 'SSC_SOURCE_APP="$SSC_APP"" >> $GITHUB_ENV
+              SSC_SOURCE_APP=${SSC_APP}
+              echo "SSC_SOURCE_APP=${SSC_SOURCE_APP}" >> $GITHUB_ENV
             fi
         fi
       shell: bash
@@ -31,25 +39,102 @@ runs:
     # Login to SSC
     - uses: fortify-ps/github-action/internal/ssc-login@main
 
-    # Login to SC SAST
-    - uses: fortify-ps/github-action/internal/sc-sast-login@main
-
-    - run: |
-        SSC_APPVERSION=$(fcli ssc appversion list --query="application.name=='$SSC_APP'&&name=='$SSC_VERSION'" --output=expr={id})
-        if [ -z "$SSC_APPVERSION"] then 
-          echo "Creation"
+    - shell: bash
+      id: ssc-create-application-version
+      run: |
+        get_appversion_id () {
+          echo $($FCLI_CMD ssc appversion list --query="application.name=='$1'&&name=='$2'" --output="expr={id}")
+        }
+        
+        # Get AppVersion ID
+        SSC_APPVERSION_ID=$(get_appversion_id $SSC_APP  $SSC_VERSION)
+        if [[ -z "$SSC_APPVERSION_ID" ]]; then
+             
+        ## AppVersion Creation
+          echo "Creation of ${SSC_APP}:${SSC_VERSION}"
+          SSC_APP_ID=$(${FCLI_CMD} ssc app list --query="name=='$SSC_APP'" --output="expr={id}")
+          if [[ -z "$SSC_APP_ID" ]]; then
+            PROJECT_BODY='{"name":"'${SSC_APP}'"}'
+          else
+            PROJECT_BODY='{"id":"'${SSC_APP_ID}'"}'
+          fi
+          echo '{"name":"'${SSC_VERSION}'","description":"","active":true,"committed":false,"project":'${PROJECT_BODY}'}'
+          SSC_APPVERSION_ID=$(${FCLI_CMD} ssc rest call /api/v1/projectVersions --request=POST --output="expr={id}" \
+          --data='{"name":"'${SSC_VERSION}'","description":"","active":true,"committed":false,"project":'${PROJECT_BODY}'}')
+          if [[ ! -z "$SSC_APPVERSION_ID" ]]; then
+            echo "AppVersion ${SSC_APP}:${SSC_VERSION} created uncommitted [$SSC_APPVERSION_ID]"
+          else
+            echo "AppVersion creation FAILED"; exit 1;
+          fi
+        
+        ### Copy Attributes from Source Version   
+          SSC_SOURCE_APPVERSION_ID=$(get_appversion_id ${SSC_SOURCE_APP} ${SSC_SOURCE_VERSION})
+          if [[ ! -z "$SSC_SOURCE_APPVERSION_ID" ]]; then
+            RESPONSE=$(${FCLI_CMD} ssc rest call /api/v1/projectVersions/action/copyFromPartial --request=POST --output="expr={responseCode}" \
+            --data='{"copyAnalysisProcessingRules":"true","copyBugTrackerConfiguration":"true","copyCustomTags":"true","previousProjectVersionId":"'$SSC_SOURCE_APPVERSION_ID'","projectVersionId":"'$SSC_APPVERSION_ID'"}' \
+             )|| echo "Failure"
+            if [[ "$RESPONSE" == "200" ]]; then
+              echo "Copy State from ${SSC_SOURCE_APP}:${SSC_SOURCE_VERSION} [$SSC_SOURCE_APPVERSION_ID] to ${SSC_APP}:${SSC_VERSION} [$SSC_APPVERSION_ID] successful"
+            else 
+              echo "Copy State from ${SSC_SOURCE_APP}:${SSC_SOURCE_VERSION} [$SSC_SOURCE_APPVERSION_ID] to ${SSC_APP}:${SSC_VERSION} [$SSC_APPVERSION_ID] Skipped"
+              RESPONSE=-1
+            fi
+          fi
+        
+        ### Setting AppVersion Attributes  
+          if [[ ! -z "$SSC_APPVERSION_ATTRIBUTES" ]]; then
+            while IFS= read -r line ; do
+              if [[ ! -z "$line" ]]; then
+                ATTR_OPTS="$ATTR_OPTS --attributes=\"$line\""
+              fi
+            done <<< "$SSC_APPVERSION_ATTRIBUTES"
+            RESPONSE=$(eval ${FCLI_CMD} ssc appversion update $SSC_APPVERSION_ID "$ATTR_OPTS" -o expr="{__action__}")|| echo "Setting AppVersion Attributes Failure"
+            if [[ "$RESPONSE" == "UPDATED" ]]; then
+              echo "Setting Attributes to ${SSC_APP}:${SSC_VERSION} [$SSC_APPVERSION_ID] successful"
+            else 
+              echo "Setting Attributes to ${SSC_APP}:${SSC_VERSION} [$SSC_APPVERSION_ID] Skipped"
+              RESPONSE=-1
+            fi
+          fi
+        
+        ### Setting AppVersion Issue Template  
+          if [[ ! -z "$SSC_APPVERSION_ISSUE_TEMPLATES" ]]; then
+            RESPONSE=$(${FCLI_CMD} ssc appversion update $SSC_APPVERSION_ID --issue-template="$SSC_APPVERSION_ISSUE_TEMPLATES" -o expr="{__action__}")|| echo "Setting AppVersion Issue Template Failure"
+            if [[ "$RESPONSE" == "UPDATED" ]]; then
+              echo "Setting Issue Template to ${SSC_APP}:${SSC_VERSION} [$SSC_APPVERSION_ID] successful"
+            else 
+              echo "Setting Issue Template to ${SSC_APP}:${SSC_VERSION} [$SSC_APPVERSION_ID] Skipped"
+              echo $RESPONSE
+              RESPONSE=-1
+            fi
+          fi
+        
+        ### AppVersion commit
+          COMMIT_APPVERSION_ID=$(${FCLI_CMD} ssc rest call /api/v1/projectVersions/${SSC_APPVERSION_ID} --request=PUT --output="expr={id}" --data='{"committed":"true"}')
+          if [[ -z "$COMMIT_APPVERSION_ID" ]]; then
+            echo "AppVersion commit failed. Trying to delete the uncommited version."
+            RESPONSE_CODE=$(${FCLI_CMD} ssc rest call /api/v1/projectVersions/${SSC_APPVERSION_ID} --request=DELETE --output="expr={responseCode}")
+            if [[ "$RESPONSE_CODE" == "200" ]]; then
+              echo "Uncommited AppVersion ${SSC_APP}:${SSC_VERSION} [$SSC_APPVERSION_ID] deleted"
+            else 
+              echo "Uncommited AppVersion ${SSC_APP}:${SSC_VERSION} [$SSC_APPVERSION_ID] not deleted"
+            fi
+          else 
+            echo "AppVersion ${SSC_APP}:${SSC_VERSION} [$SSC_APPVERSION_ID] successfully commited and created"
+          fi
+      
+        ## AppVersion exists
         else
-          echo "AppVersion ${SSC_APP}:${SSC_VERSION} already exists [$SSC_APPVERSION]"
+          echo "AppVersion ${SSC_APP}:${SSC_VERSION} already exists [$SSC_APPVERSION_ID]"
         fi
-        echo 'SSC_APPVERSION="$SSC_APPVERSION"" >> $GITHUB_ENV
+       
+        # Set AppVersion ID in env variables  
+        echo "SSC_APPVERSION_ID=$SSC_APPVERSION_ID" >> $GITHUB_ENV;
+        echo "SSC_APPVERSION_ID=$SSC_APPVERSION_ID" >> $GITHUB_OUTPUT;
 
-      shell: bash
+#    - shell: bash
+#      run: ${FCLI_CMD} ssc appversion delete $SSC_APPVERSION_ID
 
 branding:
   icon: 'shield'
   color: 'blue'
-
-#       INPUT.ssc_app,
-#      INPUT.ssc_version,
-#      INPUT.ssc_source_app,
-#      INPUT.ssc_source_version
