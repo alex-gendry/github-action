@@ -132,9 +132,6 @@ runs:
         echo "SSC_APPVERSION_ID=$SSC_APPVERSION_ID" >> $GITHUB_ENV;
         echo "SSC_APPVERSION_ID=$SSC_APPVERSION_ID" >> $GITHUB_OUTPUT;
 
-#    - shell: bash
-#      run: ${FCLI_CMD} ssc appversion delete $SSC_APPVERSION_ID
-
 branding:
   icon: 'shield'
   color: 'blue'
