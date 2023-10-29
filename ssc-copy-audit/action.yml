@@ -24,6 +24,7 @@ runs:
         if [ -z "$SSC_URL" ]; then
           echo "ERROR: SSC_URL environment variable must be set"; exit 1;
         fi
+        echo SSC_URL="$SSC_URL" >> $GITHUB_OUTPUT;
         
         if [[ -z "$SSC_VERSION" && -z "$SSC_APPVERSION_ID" ]]; then
           echo "No Version Name (SSC_VERSION) or Version Id (SSC_APPVERSION_ID) provided. Defaulting to Branch name: ${GITHUB_REF_NAME}"
