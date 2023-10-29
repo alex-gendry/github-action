@@ -8,7 +8,7 @@ inputs:
   ssc_target_appversion_id:
     description: 'Id of the AppVersion to copy to'
     required: true
-  ssc_copy_appversion_id:
+  ssc_source_appversion_id:
     description: 'Id of the AppVersion to copy from'
     required: true
 runs:
