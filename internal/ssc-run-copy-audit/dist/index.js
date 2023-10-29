@@ -37886,7 +37886,7 @@ async function fcli(args, returnStatus = false, silent = true) {
             silent: silent
         };
         if (core.isDebug()) {
-            await core.group(`fcli ${args.join(' ')}`, async () => {
+            return await core.group(`fcli ${args.join(' ')}`, async () => {
                 const response = await exec.exec(getFcliPath(), args, options);
                 debugObject(response, 'status');
                 debugObject(responseData, 'responseData');
