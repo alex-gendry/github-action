@@ -69,7 +69,7 @@ jobs:
 
     steps:
       - name: create-appversion
-        uses: fortify/github-action/ssc-create-application-version@v1
+        uses: fortify/github-action/ssc-create-appversion@v1
 ```
 
 #### SSC Considerations
@@ -108,7 +108,7 @@ jobs:
 
     steps:
       - name: create-appversion
-        uses: fortify/github-action/ssc-create-application-version@v1
+        uses: fortify/github-action/ssc-create-appversion@v1
           
 ```
 

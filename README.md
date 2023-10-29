@@ -30,7 +30,7 @@ The [Fortify github-action repository]({{repo-url}}) hosts various Fortify-relat
 
 * [`fortify/github-action@v1`](#primary-action)  
   For now, this action provides the same functionality as the `ssc-sast-scan` action listed below. Future versions may add support for running other types of scans or performing other SSC / ScanCentral actions.
-* [`fortify/github-action/ssc-create-application-version@v1`](ssc-create-application-version%2FREADME.md) \
+* [`fortify/github-action/ssc-create-appversion@v1`](ssc-create-appversion%2FREADME.md) \
   Create new Application Version in Software Security Center. Supports copying Version attributes from another Application Version (eg: *Use existing application version* in SSC, without *Application State*)
 * [`fortify/github-action/ssc-copy-vulns@v1`](ssc-copy-vulns%2FREADME.md) \
   Create new Application Version in Software Security Center. Supports copying Version attributes from another Application Version (eg: *Use existing application version* in SSC, without *Application State*)
