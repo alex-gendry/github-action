@@ -1,4 +1,4 @@
-# Copy Application Version Vulnerabilities in Fortify Software Security Center
+# Create Application Version in Fortify Software Security Center
 
 Build secure software fast with [Fortify](https://www.microfocus.com/en-us/solutions/application-security). Fortify offers end-to-end application security solutions with the flexibility of testing on-premises and on-demand to scale and cover the entire software development lifecycle.  With Fortify, find security issues early and fix at the speed of DevOps.
 
@@ -11,8 +11,11 @@ This GitHub Action utilizes [fcli](https://github.com/fortify/fcli) to copy Vuln
     * [Network connectivity](#network-connectivity)
     * [fcli](#fcli)
 * [Usage](#usage)
-    * [Copy Application Version Vulnerabilities](#copy-application-version-vulnerabilities)
+    * [Create Application Version](#create-application-version)
+        * [Create Application Version with Copy State and Vulns](#create-application-version-with-copy-state-and-vulns)
+        * [SSC Inputs](#ssc-inputs)
 * [Environment Variables](#environment-variables)
+* [Information for Developers](#information-for-developers)
 
 ## Requirements
 
@@ -20,7 +23,7 @@ This GitHub Action utilizes [fcli](https://github.com/fortify/fcli) to copy Vuln
 Obviously you will need to have an SSC instance from which you can retrieve Fortify scan results. If you are not already a Fortify customer, check out our [Free Trial](https://www.microfocus.com/en-us/products/application-security-testing/free-trial).
 
 ### Network connectivity
-The SSC instance you wish to reach needs to be accessible from the GitHub Runner where this action is being executed. Following table lists some considerations:
+The SSC instance in which you want to create an Application Version needs to be accessible from the GitHub Runner where this action is being executed. Following table lists some considerations:
 
 | Source | Runner        | Considerations |
 | ------ | ------------- | -------------- |
@@ -29,7 +32,14 @@ The SSC instance you wish to reach needs to be accessible from the GitHub Runner
 
 ### fcli
 
-This action uses [fcli](https://github.com/fortify/fcli) for most of its call to Software Security Center.
+This action uses [fcli](https://github.com/fortify/fcli) for most of its call to Software Security Center. Either use the [OpenText Official Docker Image](https://hub.docker.com/r/fortifydocker/fortify-ci-tools): `
+fortifydocker/fortify-ci-tools`. Or download the cli in you jobs:
+
+```bash
+  - name: Download fcli
+    run: |
+      wget -qO- https://github.com/fortify/fcli/releases/download/v2.0.0/fcli-linux.tgz | tar zxf -  
+```
 
 ## Usage
 
@@ -39,16 +49,16 @@ This GitHub Action achieves the following :
 - Login to Software Security Center
 - Copy Vulnerabilities from one application version to another
 
-### Copy Application Version Vulnerabilities
+### Create Application Version
 
 This example workflow demonstrates how to copy one application version to another
 
 ```yaml
-name: (FTFY) Copy Application Version Vulnerabilities
+name: (FTFY) Create Application Version
 on: [workflow dispatch]
       
 jobs:                                                  
-  CopyVulns:
+  CreateAppVersion:
     runs-on: ubuntu-latest
     
     container:
@@ -67,8 +77,8 @@ jobs:
         id: checkout
         uses: actions/checkout@v4
 
-      - name: copy-vulns
-        uses: fortify-ps/github-action/ssc-copy-vulns@v1
+      - name: create-appversion
+        uses: fortify/github-action/ssc-copy-vulns@v1
 ```
 
 #### SSC Considerations
@@ -102,3 +112,4 @@ Default: Repository name
 **`SSC_VERSION`**  *Optional*\
 The target SSC application version name
 Default: Branch name
+ssue Templates

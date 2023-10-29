@@ -1,8 +1,8 @@
-# Copy Application Version Vulnerabilities in Fortify Software Security Center
+# Copy Application Version Audit in Fortify Software Security Center
 
 Build secure software fast with [Fortify](https://www.microfocus.com/en-us/solutions/application-security). Fortify offers end-to-end application security solutions with the flexibility of testing on-premises and on-demand to scale and cover the entire software development lifecycle.  With Fortify, find security issues early and fix at the speed of DevOps.
 
-This GitHub Action utilizes [fcli](https://github.com/fortify/fcli) to copy Vulnerabilities from one application version to another.
+This GitHub Action utilizes [fcli](https://github.com/fortify/fcli) to copy Audit information from one application version to another.
 
 ## Table of Contents
 
@@ -11,7 +11,7 @@ This GitHub Action utilizes [fcli](https://github.com/fortify/fcli) to copy Vuln
     * [Network connectivity](#network-connectivity)
     * [fcli](#fcli)
 * [Usage](#usage)
-    * [Copy Application Version Vulnerabilities](#copy-application-version-vulnerabilities)
+    * [Copy Application Version Audit information](#copy-application-version-audit-information)
 * [Environment Variables](#environment-variables)
 
 ## Requirements
@@ -37,18 +37,18 @@ This GitHub Action achieves the following :
 
 - Setup fcli
 - Login to Software Security Center
-- Copy Vulnerabilities from one application version to another
+- Copy Audit information from one application version to another
 
-### Copy Application Version Vulnerabilities
+### Copy Application Version Audit information
 
 This example workflow demonstrates how to copy one application version to another
 
 ```yaml
-name: (FTFY) Copy Application Version Vulnerabilities
+name: (FTFY) Copy Audit
 on: [workflow dispatch]
       
 jobs:                                                  
-  CopyVulns:
+  CopyAudit:
     runs-on: ubuntu-latest
     
     container:
@@ -67,8 +67,8 @@ jobs:
         id: checkout
         uses: actions/checkout@v4
 
-      - name: copy-vulns
-        uses: fortify-ps/github-action/ssc-copy-vulns@v1
+      - name: copy-audit
+        uses: fortify/github-action/ssc-copy-audit@v1
 ```
 
 #### SSC Considerations
@@ -78,8 +78,8 @@ jobs:
 ## Environment Variables
 
 The Environment Variable for the following actions apply:
-- fortify-ps/github-action/setup
-- fortify-ps/github-action/internal/ssc-login
+- fortify/github-action/setup
+- fortify/github-action/internal/ssc-login
 
 **`SSC_SOURCE_VERSION_ID`**   *Optional*\
 The source SSC application version id to copy from
@@ -102,3 +102,4 @@ Default: Repository name
 **`SSC_VERSION`**  *Optional*\
 The target SSC application version name
 Default: Branch name
+ssue Templates
