@@ -2,9 +2,9 @@ name: 'Create Application Verion in Software Security Center'
 description: 'Create Application Verion in Software Security Center'
 author: 'Fortify'
 outputs:
-  SSC_APPVERSION_ID:
-    description: "Created AppVersion Id"
-    value: ${{ steps.ssc-create-application-version.outputs.SSC_APPVERSION_ID }}
+  SSC_APPVERSION_CREATE_STATUS:
+    description: "Status of the AppVersion Creation"
+    value: ${{ steps.create-appversion.outputs.SSC_APPVERSION_CREATE_STATUS }}
 runs:
   using: composite
   steps:
@@ -40,7 +40,7 @@ runs:
     - uses: fortify-ps/github-action/internal/ssc-login@main
 
     - shell: bash
-      id: ssc-create-application-version
+      id: create-appversion
       run: |
         get_appversion_id () {
           echo $($FCLI_CMD ssc appversion list --query="application.name=='$1'&&name=='$2'" --output="expr={id}")
@@ -64,6 +64,7 @@ runs:
           if [[ ! -z "$SSC_APPVERSION_ID" ]]; then
             echo "AppVersion ${SSC_APP}:${SSC_VERSION} created uncommitted [$SSC_APPVERSION_ID]"
           else
+            echo SSC_APPVERSION_CREATE_STATUS="FAILED" >> $GITHUB_OUTPUT;
             echo "AppVersion creation FAILED"; exit 1;
           fi
         
@@ -114,23 +115,37 @@ runs:
           if [[ -z "$COMMIT_APPVERSION_ID" ]]; then
             echo "AppVersion commit failed. Trying to delete the uncommited version."
             RESPONSE_CODE=$(${FCLI_CMD} ssc rest call /api/v1/projectVersions/${SSC_APPVERSION_ID} --request=DELETE --output="expr={responseCode}")
+            echo SSC_APPVERSION_CREATE_STATUS="FAILED" >> $GITHUB_OUTPUT;
             if [[ "$RESPONSE_CODE" == "200" ]]; then
               echo "Uncommited AppVersion ${SSC_APP}:${SSC_VERSION} [$SSC_APPVERSION_ID] deleted"
             else 
               echo "Uncommited AppVersion ${SSC_APP}:${SSC_VERSION} [$SSC_APPVERSION_ID] not deleted"
             fi
+            exit 1
           else 
             echo "AppVersion ${SSC_APP}:${SSC_VERSION} [$SSC_APPVERSION_ID] successfully commited and created"
+            echo SSC_APPVERSION_CREATE_STATUS="CREATED" >> $GITHUB_OUTPUT;
           fi
       
         ## AppVersion exists
         else
           echo "AppVersion ${SSC_APP}:${SSC_VERSION} already exists [$SSC_APPVERSION_ID]"
+          echo SSC_APPVERSION_CREATE_STATUS="EXISTS" >> $GITHUB_OUTPUT;
         fi
        
         # Set AppVersion ID in env variables  
         echo "SSC_APPVERSION_ID=$SSC_APPVERSION_ID" >> $GITHUB_ENV;
-        echo "SSC_APPVERSION_ID=$SSC_APPVERSION_ID" >> $GITHUB_OUTPUT;
+
+    - name: copy-vulns
+      if: ${{ env.SSC_CREATE_AND_COPY_VULNS && steps.create-appversion.outputs.SSC_APPVERSION_CREATE_STATUS == 'CREATED' }}
+      uses: alex-gendry/github-action/ssc-copy-vulns@main
+
+    - name: copy-audit
+      if: ${{ env.SSC_CREATE_AND_COPY_AUDIT && steps.create-appversion.outputs.SSC_APPVERSION_CREATE_STATUS == 'CREATED' }}
+      uses: alex-gendry/github-action/ssc-copy-audit@main
+       
+     
+      
 
 branding:
   icon: 'shield'
