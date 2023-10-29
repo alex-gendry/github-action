@@ -14,9 +14,7 @@ The Action can copy the Application State and the Values from another Applicatio
 * [Usage](#usage)
     * [Create Application Version](#create-application-version)
         * [Create Application Version with Copy State and Vulns](#create-application-version-with-copy-state-and-vulns)
-        * [SSC Inputs](#ssc-inputs)
 * [Environment Variables](#environment-variables)
-* [Information for Developers](#information-for-developers)
 
 ## Requirements
 
@@ -113,9 +111,6 @@ jobs:
         uses: fortify/github-action/ssc-create-application-version@v1
           
 ```
-#### SSC Inputs
-
-
 
 ## Environment Variables
 
@@ -161,3 +156,13 @@ The source SSC application name to copy from
 
 **`SSC_SOURCE_VERSION`**   *Optional*\
 The source SSC application version name to copy from
+
+**`SSC_CREATE_AND_COPY_VULNS`**   *Optional*\
+Copy Vulnerability along with the Application Creation. \
+Will be skipped if AppVersion already existed. If you want to force it, run [`fortify/github-action/ssc-copy-vulns`](ssc-copy-vulns%2FREADME.md)
+Default: false
+
+**`SSC_CREATE_AND_COPY_AUDIT`**   *Optional*\
+Copy Audit information along with the Application Creation. \
+Will be skipped if AppVersion already existed. If you want to force it, run [`fortify/github-action/ssc-copy-audit`](ssc-copy-audit%2FREADME.md)
+Default: false
