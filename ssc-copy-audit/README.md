@@ -21,7 +21,7 @@ This GitHub Action utilizes [fcli](https://github.com/fortify/fcli) to copy Audi
 Obviously you will need to have an SSC instance from which you can retrieve Fortify scan results. If you are not already a Fortify customer, check out our [Free Trial](https://www.microfocus.com/en-us/products/application-security-testing/free-trial).
 
 ### Network connectivity
-The SSC instance in which you want to create an Application Version needs to be accessible from the GitHub Runner where this action is being executed. Following table lists some considerations:
+The SSC instance you wish to reach needs to be accessible from the GitHub Runner where this action is being executed. Following table lists some considerations:
 
 | Source | Runner        | Considerations |
 | ------ | ------------- | -------------- |
@@ -30,14 +30,7 @@ The SSC instance in which you want to create an Application Version needs to be 
 
 ### fcli
 
-This action uses [fcli](https://github.com/fortify/fcli) for most of its call to Software Security Center. Either use the [OpenText Official Docker Image](https://hub.docker.com/r/fortifydocker/fortify-ci-tools): `
-fortifydocker/fortify-ci-tools`. Or download the cli in you jobs:
-
-```bash
-  - name: Download fcli
-    run: |
-      wget -qO- https://github.com/fortify/fcli/releases/download/v2.0.0/fcli-linux.tgz | tar zxf -  
-```
+This action uses [fcli](https://github.com/fortify/fcli) for most of its call to Software Security Center.
 
 ## Usage
 
@@ -56,7 +49,7 @@ name: (FTFY) Copy Audit
 on: [workflow dispatch]
       
 jobs:                                                  
-  CreateAppVersion:
+  CopyAudit:
     runs-on: ubuntu-latest
     
     container:
