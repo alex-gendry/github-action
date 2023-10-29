@@ -8,7 +8,7 @@ export async function transposeToAppVersion(
     appVersionId: string | number
 ) {
     utils.debugObject(`Transposing vulns to ${appVersionId}`)
-    utils.debugObject(`source vulns qty: ${vulns.length}`)
+    utils.debugObject(`source vulns qty: ${vulns?.length}`)
     utils.debugObject(`Getting target vulns`)
     const targetVulns = await appversion.getAppVersionVulns(
         appVersionId,
@@ -16,10 +16,10 @@ export async function transposeToAppVersion(
         '',
         'id,issueInstanceId,revision'
     )
-    utils.debugObject(`target vulns qty: ${targetVulns.length}`)
+    utils.debugObject(`target vulns qty: ${targetVulns?.length}`)
     var jp = require('jsonpath')
 
-    vulns.forEach(function (vuln: any, index: number, vulns: any[]) {
+    vulns?.forEach(function (vuln: any, index: number, vulns: any[]) {
         const targetVuln = jp.query(
             targetVulns,
             `$..[?(@.issueInstanceId=="${vuln.issueInstanceId}")]`

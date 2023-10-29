@@ -38054,12 +38054,12 @@ const core = __importStar(__nccwpck_require__(2186));
 const utils_1 = __nccwpck_require__(1314);
 async function transposeToAppVersion(vulns, appVersionId) {
     utils.debugObject(`Transposing vulns to ${appVersionId}`);
-    utils.debugObject(`source vulns qty: ${vulns.length}`);
+    utils.debugObject(`source vulns qty: ${vulns?.length}`);
     utils.debugObject(`Getting target vulns`);
     const targetVulns = await appversion.getAppVersionVulns(appVersionId, '', '', 'id,issueInstanceId,revision');
-    utils.debugObject(`target vulns qty: ${targetVulns.length}`);
+    utils.debugObject(`target vulns qty: ${targetVulns?.length}`);
     var jp = __nccwpck_require__(4378);
-    vulns.forEach(function (vuln, index, vulns) {
+    vulns?.forEach(function (vuln, index, vulns) {
         const targetVuln = jp.query(targetVulns, `$..[?(@.issueInstanceId=="${vuln.issueInstanceId}")]`)[0];
         if (targetVuln?.id) {
             utils.debugObject(`target vuln found for issueInstanceId ${vuln.issueInstanceId} : ${targetVuln.id} `);
