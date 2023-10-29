@@ -63,7 +63,7 @@ runs:
       shell: bash
 
     # Copy audit
-    - uses: ./internal/ssc-run-copy-audit
+    - uses: alex-gendry/github-action/internal/ssc-run-copy-audit@feat/ssc-copy-audit
       id: ssc-copy-audit
       with:
         ssc_base_url: ${{ steps.define-options.outputs.SSC_URL }}
