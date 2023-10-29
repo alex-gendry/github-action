@@ -30,9 +30,6 @@ jobs:
   CopyVulns:
     runs-on: ubuntu-latest
     
-    container:
-      image: fortifydocker/fortify-ci-tools
-    
     env:
       SSC_SOURCE_APP: "source_app_name"
       SSC_SOURCE_VERSION: "source_version_name"

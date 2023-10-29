@@ -61,9 +61,6 @@ jobs:
   CreateAppVersion:
     runs-on: ubuntu-latest
 
-    container:
-      image: fortifydocker/fortify-ci-tools
-
     env:
       SSC_APP: ${{ github.event.repository.name }}
       SSC_VERSION: ${{ github.ref_name }}
