@@ -52,15 +52,15 @@ runs:
               echo "Source Version provided without Source Application. Defaulting to Target Application $SSC_APP";
               SSC_SOURCE_APP=${SSC_APP}
             fi
-            SSC_COPY_APPVERSION_ID=$(get_appversion_id $SSC_SOURCE_APP  $SSC_SOURCE_VERSION)
-            if [[ -z "$SSC_COPY_APPVERSION_ID" ]]; then echo Error: Failed to get Id for "$SSC_SOURCE_APP":"$SSC_SOURCE_VERSION"; exit 1; fi
-            echo Copying from "$SSC_SOURCE_APP":"$SSC_SOURCE_VERSION" with Id $SSC_COPY_APPVERSION_ID
+            SSC_SOURCE_APPVERSION_ID=$(get_appversion_id $SSC_SOURCE_APP  $SSC_SOURCE_VERSION)
+            if [[ -z "$SSC_SOURCE_APPVERSION_ID" ]]; then echo Error: Failed to get Id for "$SSC_SOURCE_APP":"$SSC_SOURCE_VERSION"; exit 1; fi
+            echo Copying from "$SSC_SOURCE_APP":"$SSC_SOURCE_VERSION" with Id $SSC_SOURCE_APPVERSION_ID
         elif [[ !  -z "$SSC_SOURCE_VERSION_ID" ]]; then
           echo Copying from AppVersion with id $SSC_APPVERSION_ID
         else
           echo "ERROR: SSC_SOURCE_VERSION or SSC_SOURCE_VERSION_ID environment variable must be set"; exit 1;
         fi
-        echo "SSC_COPY_APPVERSION_ID=$SSC_COPY_APPVERSION_ID" >> $GITHUB_OUTPUT;
+        echo "SSC_SOURCE_APPVERSION_ID=$SSC_SOURCE_APPVERSION_ID" >> $GITHUB_OUTPUT;
       shell: bash
 
     # Copy audit
@@ -68,7 +68,7 @@ runs:
       id: ssc-copy-audit
       with:
         ssc_base_url: ${{ steps.define-options.outputs.SSC_URL }}
-        ssc_copy_appversion_id: ${{ steps.define-options.outputs.SSC_COPY_APPVERSION_ID }}
+        ssc_source_appversion_id: ${{ steps.define-options.outputs.SSC_SOURCE_APPVERSION_ID }}
         ssc_target_appversion_id: ${{ steps.define-options.outputs.SSC_TARGET_APPVERSION_ID }}
 
 
