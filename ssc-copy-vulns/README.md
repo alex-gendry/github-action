@@ -6,30 +6,9 @@ This GitHub Action utilizes [fcli](https://github.com/fortify/fcli) to copy Vuln
 
 ## Table of Contents
 
-* [Requirements](#requirements)
-    * [SSC instance](#ssc-instance)
-    * [Network connectivity](#network-connectivity)
-    * [fcli](#fcli)
 * [Usage](#usage)
     * [Copy Application Version Vulnerabilities](#copy-application-version-vulnerabilities)
 * [Environment Variables](#environment-variables)
-
-## Requirements
-
-### SSC instance
-Obviously you will need to have an SSC instance from which you can retrieve Fortify scan results. If you are not already a Fortify customer, check out our [Free Trial](https://www.microfocus.com/en-us/products/application-security-testing/free-trial).
-
-### Network connectivity
-The SSC instance you wish to reach needs to be accessible from the GitHub Runner where this action is being executed. Following table lists some considerations:
-
-| Source | Runner        | Considerations |
-| ------ | ------------- | -------------- |
-| SSC    | GitHub-hosted | GitHub lists [IP addresses for GitHub-hosted runners](https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#ip-addresses) that need to be allowed network access to SSC. Exposing an SSC instance to the internet, even if limited to only GitHub IP addresses, could pose a security risk. |
-| SSC    | Self-hosted   | May need to allow network access from the self-hosted runner to SSC if in different network segments |
-
-### fcli
-
-This action uses [fcli](https://github.com/fortify/fcli) for most of its call to Software Security Center.
 
 ## Usage
 
