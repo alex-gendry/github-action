@@ -1,0 +1,19 @@
+name: 'Software Security Center : run copy Audit information from one application version to another'
+description: 'run copy Audit information from one application version to another'
+author: 'Fortify'
+inputs:
+  ssc_base_url:
+    description: 'Fortify SSC base URL'
+    required: true
+  ssc_target_appversion_id:
+    description: 'Id of the AppVersion to copy to'
+    required: true
+  ssc_copy_appversion_id:
+    description: 'Id of the AppVersion to copy from'
+    required: true
+runs:
+  using: node20
+  main: 'dist/index.js'
+branding:
+  icon: 'shield'
+  color: 'blue'
