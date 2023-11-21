@@ -1,0 +1,40 @@
+name: Workflow-name
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+
+jobs:
+  Fortify-SAST:
+    name: GitHub Actions Test
+    env:
+      SSC_APP: EightBall
+      SSC_VERSION: trash/11
+      SSC_SOURCE_APP: EightBall
+      SSC_SOURCE_VERSION: github/master
+      SSC_CREATE_AND_COPY_VULNS: ${{ true }}
+      SSC_CREATE_AND_COPY_AUDIT: ${{ true }}
+      #      SSC_APPVERSION_ATTRIBUTES: |
+      #        Accessibility=Internal Network Access Required
+      #        DevStrategy=Internally Developed
+      #        DevPhase=New
+      #        Interfaces=Programmatic API
+      #      SSC_APPVERSION_ISSUE_TEMPLATES: Prioritized High Risk Issue Template
+      SSC_URL: ${{ vars.FTFY_SSC_BASE_URL }}
+      SSC_USER: ${{ secrets.FTFY_CI_USERNAME }}
+      #      SSC_TOKEN: ${{ secrets.FTFY_CI_TOKEN_ENC }}
+      SSC_PASSWORD: ${{ secrets.FTFY_CI_PASSWORD }}
+
+    #    container:
+    #      image: fortifydocker/fortify-ci-tools
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v4
+
+      - name: create
+        uses: ./ssc-create-application-version
+
+
+

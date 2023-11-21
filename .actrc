@@ -1,0 +1,13 @@
+--pull=false
+-P ubuntu-latest=catthehacker/ubuntu:js-latest
+-P fortifydocker/fortify-ci-tools=catthehacker/ubuntu:js-latest
+--var FTFY_SSC_BASE_URL=https://fortify.prod.ekseed.org/ssc
+--var FTFY_SC_CLIENT_VERSION=23.1.0
+-s FTFY_CI_TOKEN_ENC=ZDQ4NWY0MDYtYzY4OS00YjE2LWIxYjUtOTVkOWE2NzYzZTM1
+-s FTFY_SAST_CLIENT_TOKEN=GCBJqBPr7qd5dgkf
+-s FTFY_CI_PASSWORD=E7JMitdsHQYkmm7c
+-s FTFY_CI_USERNAME=gha
+-s GITHUB_TOKEN=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
+-j Fortify-SAST
+
+-v
