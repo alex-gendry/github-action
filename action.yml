@@ -5,7 +5,7 @@ inputs:
   sast-scan:
     description: 'Run a SAST scan, takes either true or false (default)'
     default: 'false'
-    required: false
+    required: false 
 runs:
   using: composite
   steps:
