@@ -1,0 +1,63 @@
+name: 'Run "fcli ssc appversion create" command'
+description: 'Run "fcli ssc appversion create" command based on environment variables'
+author: 'Fortify'
+runs:
+  using: composite
+  steps:
+    # Define login options
+    - id: ssc-appversion-create-options
+      run: |
+        _SSC_APPVERSION_CREATE_OPTS=""
+        if [ -n "$SSC_APPVERSION_DELIMITER" ]; then
+          _SSC_APPVERSION_CREATE_OPTS="${_SSC_APPVERSION_CREATE_OPTS} --delimiter ${SSC_APPVERSION_DELIMITER}"
+        fi
+        if [ -n "$SSC_APPVERSION_ACTIVE" ]; then
+          _SSC_APPVERSION_CREATE_OPTS="${_SSC_APPVERSION_CREATE_OPTS} --active ${SSC_APPVERSION_ACTIVE}"
+        fi
+        if [ -n "$SSC_ADD_USERS" ]; then
+          _SSC_APPVERSION_CREATE_OPTS="${_SSC_APPVERSION_CREATE_OPTS} --add-users ${SSC_ADD_USERS}"
+        fi
+        if [ -n "$SSC_ATTRIBUTES" ]; then
+          _SSC_APPVERSION_CREATE_OPTS="${_SSC_APPVERSION_CREATE_OPTS} --attr ${SSC_ATTRIBUTES}"
+        fi
+        if [ -n "$SSC_AUTO_ATTRIBUTES" ]; then
+          _SSC_APPVERSION_CREATE_OPTS="${_SSC_APPVERSION_CREATE_OPTS} --auto-required-attrs"
+        fi
+        if [ -n "$SSC_ISSUE_TEMPLATE" ]; then
+          _SSC_APPVERSION_CREATE_OPTS="${_SSC_APPVERSION_CREATE_OPTS} --issue-template ${SSC_ISSUE_TEMPLATE}"
+        fi
+        if [ -n "$SSC_APPVERSION_FROM" ]; then
+          _SSC_APPVERSION_CREATE_OPTS="${_SSC_APPVERSION_CREATE_OPTS} --copy-from ${SSC_APPVERSION_FROM}"
+        fi
+        if [ -n "$SSC_COPY_OPTIONS" ]; then
+          _SSC_APPVERSION_CREATE_OPTS="${_SSC_APPVERSION_CREATE_OPTS} --copy ${SSC_COPY_OPTIONS}"
+        fi
+        if [ -n "$SSC_REFRESH" ]; then
+          _SSC_APPVERSION_CREATE_OPTS="${_SSC_APPVERSION_CREATE_OPTS} --refresh=${SSC_REFRESH}"
+        fi
+        if [ -n "$SSC_APPVERSION_DESCRIPTION" ]; then
+          _SSC_APPVERSION_CREATE_OPTS="${_SSC_APPVERSION_CREATE_OPTS} --description ${SSC_APPVERSION_DESCRIPTION}"
+        fi
+        if [ -n "$SSC_APPVERSION_SKIP" ]; then
+          _SSC_APPVERSION_CREATE_OPTS="${_SSC_APPVERSION_CREATE_OPTS} --skip-if-exists=${SSC_APPVERSION_SKIP}"
+        else 
+          _SSC_APPVERSION_CREATE_OPTS="${_SSC_APPVERSION_CREATE_OPTS} --skip-if-exists"
+        fi
+        echo _SSC_APPVERSION_CREATE_OPTS="${_SSC_APPVERSION_CREATE_OPTS}" >> "$GITHUB_OUTPUT"
+      shell: bash
+    # Run fcli login command; note that the calling action/workflow is responsible for installing fcli
+    - run: echo "${FCLI_CMD}" ssc appversion create "${SSC_APPVERSION}" ${_SSC_APPVERSION_CREATE_OPTS} ${SSC_APPVERSION_CREATE_OPTS}
+#    - run: echo $GITHUB_BASE_REF
+      env:
+        _SSC_APPVERSION_CREATE_OPTS: ${{ steps.ssc-appversion-create-options.outputs._SSC_APPVERSION_CREATE_OPTS }}
+      shell: bash
+    - run: echo $GITHUB_EVENT_NAME
+    - uses: fortify/github-action/internal/run@v1
+      env:
+        _SSC_APPVERSION_CREATE_OPTS: ${{ steps.ssc-appversion-create-options.outputs._SSC_APPVERSION_CREATE_OPTS }}
+      with:
+        cmd: '"${FCLI_CMD}" ssc appversion create "${SSC_APPVERSION}" ${_SSC_APPVERSION_CREATE_OPTS} ${SSC_APPVERSION_CREATE_OPTS}'
+branding:
+  icon: 'shield'
+  color: 'blue'
+
