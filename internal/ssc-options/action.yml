@@ -2,7 +2,7 @@ name: Defines Options for SSC Actions
 description: Defines Options for SSC Actions
 author: 'Fortify'
 runs:
-  using: composite
+#  using: composite
   steps:
     # Define options
     - id: ssc-options
