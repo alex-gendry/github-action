@@ -8,10 +8,10 @@ runs:
       with:
         export-path: false
         fcli: action-default
-    - uses: ./internal/ssc-options
+    - uses: alex-gendry/github-action/internal/ssc-options
     - uses: fortify/github-action/internal/ssc-login@main
     - uses: fortify/github-action/internal/sc-sast-login@main
-    - uses: ./ssc-create-appversion
+    - uses: alex-gendry/github-action/ssc-create-appversion
 #    - uses: fortify/github-action/package@main
 #    - uses: fortify/github-action/internal/run@main
 #      with:
