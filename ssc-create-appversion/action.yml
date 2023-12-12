@@ -52,6 +52,7 @@ runs:
         _SSC_APPVERSION_CREATE_OPTS: ${{ steps.ssc-appversion-create-options.outputs._SSC_APPVERSION_CREATE_OPTS }}
       shell: bash
     - run: echo $GITHUB_EVENT_NAME
+      shell: bash
     - uses: fortify/github-action/internal/run@v1
       env:
         _SSC_APPVERSION_CREATE_OPTS: ${{ steps.ssc-appversion-create-options.outputs._SSC_APPVERSION_CREATE_OPTS }}
