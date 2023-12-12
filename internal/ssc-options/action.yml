@@ -2,13 +2,10 @@ name: Defines Options for SSC Actions
 description: Defines Options for SSC Actions
 author: 'Fortify'
 runs:
-  using: "composite"
+  using: composite
   steps:
     # Define options
-    - id: ssc-options
-      with:
-        REPO_DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
-      run: |
+    - run: |
         # If not specified, set default AppVersion to octocat/Hello-World:branch
         if [ -z "$SSC_APPVERSION" ]; then 
           echo SSC_APPVERSION="${GITHUB_REPOSITORY}:${GITHUB_REF_NAME}" >> $GITHUB_ENV
@@ -22,6 +19,9 @@ runs:
           fi
         fi
       shell: bash
+      id: ssc-options
+      with:
+        REPO_DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
 branding:
   icon: 'shield'
   color: 'blue'
