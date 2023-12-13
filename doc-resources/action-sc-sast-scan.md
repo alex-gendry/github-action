@@ -1,5 +1,8 @@
 This action performs a SAST scan on ScanCentral SAST, consisting of the following steps:
 
+* Setting up fcli and scancentral clients
+* Login to Software Security Center
+* Creates the Application Version if does not exists
 * Login to ScanCentral SAST Controller
 * Package application source code using ScanCentral Client
 * Submit the source code package to be scanned to ScanCentral SAST Controller

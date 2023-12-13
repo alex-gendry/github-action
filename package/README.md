@@ -1,4 +1,5 @@
-# fortify/github-action/package@v1 
+# fortify/github-action/package@v1
+ 
 
 
 <!-- START-INCLUDE:p.marketing-intro.md -->
@@ -36,6 +37,7 @@ The sample workflow below demonstrates how to configure the action for running a
         uses: actions/checkout@v4  
       - name: Package source code
         uses: fortify/github-action/package@v1
+
         env:
           # EXTRA_PACKAGE_OPTS: -bf custom-pom.xml
 ```
@@ -50,7 +52,8 @@ The sample workflow below demonstrates how to configure the action for running a
 
 The only warranties for products and services of Open Text and its affiliates and licensors (“Open Text”) are as may be set forth in the express warranty statements accompanying such products and services. Nothing herein should be construed as constituting an additional warranty. Open Text shall not be liable for technical or editorial errors or omissions contained herein. The information contained herein is subject to change without notice.
 
-The software is provided "as is" and is not supported through the regular OpenText Support channels. Support requests may be submitted through the [GitHub Issues](https://github.com/fortify/github-action/issues) page for this repository. A (free) GitHub account is required to submit new issues or to comment on existing issues. 
+The software is provided "as is" and is not supported through the regular OpenText Support channels. Support requests may be submitted through the [GitHub Issues](https://github.com/fortify/github-action
+/issues) page for this repository. A (free) GitHub account is required to submit new issues or to comment on existing issues. 
 
 Support requests created through the GitHub Issues page may include bug reports, enhancement requests and general usage questions. Please avoid creating duplicate issues by checking whether there is any existing issue, either open or closed, that already addresses your question, bug or enhancement request. If an issue already exists, please add a comment to provide additional details if applicable.
 

@@ -1,4 +1,5 @@
-# fortify/github-action@v1 
+# fortify/github-action@v1
+ 
 
 
 <!-- START-INCLUDE:p.marketing-intro.md -->
@@ -11,7 +12,8 @@
 
 <!-- START-INCLUDE:repo-readme.md -->
 
-The [Fortify github-action repository](https://github.com/fortify/github-action) hosts various Fortify-related GitHub Actions as listed in the sections below.
+The [Fortify github-action repository](https://github.com/fortify/github-action
+) hosts various Fortify-related GitHub Actions as listed in the sections below.
 
 **Fortify on Demand**
 
@@ -79,7 +81,8 @@ Required when authenticating with user credentials: FoD tenant, user and passwor
 
 
 **`EXTRA_FOD_LOGIN_OPTS`** - OPTIONAL   
-Extra FoD login options, for example for disabling SSL checks or changing connection time-outs; see [`fcli fod session login` documentation](https://fortify.github.io/fcli/v2.0.0//manpage/fcli-fod-session-login.html)
+Extra FoD login options, for example for disabling SSL checks or changing connection time-outs; see [`fcli fod session login` documentation](https://fortify.github.io/fcli/v2.0.0/
+/manpage/fcli-fod-session-login.html)
 
 <!-- END-INCLUDE:env-fod-login.md -->
 
@@ -109,7 +112,8 @@ As an example, if the build file that you want to use for packaging doesn't adhe
 
 
 **`EXTRA_FOD_SAST_SCAN_OPTS`** - OPTIONAL    
-Extra FoD SAST scan options; see [`fcli fod sast-scan start` documentation](https://fortify.github.io/fcli/v2.0.0//manpage/fcli-fod-sast-scan-start.html)
+Extra FoD SAST scan options; see [`fcli fod sast-scan start` documentation](https://fortify.github.io/fcli/v2.0.0/
+/manpage/fcli-fod-sast-scan-start.html)
 
 
 <!-- START-INCLUDE:env-wait-export.md -->
@@ -123,6 +127,7 @@ If set to `true`, this action will export scan results to the GitHub Security Co
 <!-- END-INCLUDE:env-wait-export.md -->
 
 
+
 <!-- END-INCLUDE:env-fod-sast-scan.md -->
 
 
@@ -130,6 +135,56 @@ If set to `true`, this action will export scan results to the GitHub Security Co
 
 
 <!-- START-INCLUDE:env-sc-sast-scan.md -->
+
+
+<!-- START-INCLUDE:env-ssc-create-appversion.md -->
+
+**`SSC_APPVERSION`** - OPTIONAL   
+Application and version name. 
+If not provided, <repository>:<branch> will be used
+
+**`SSC_APPVERSION_ACTIVE`** - OPTIONAL   
+Specify whether application version should be activated (true, default) or not (false).
+
+**`SSC_ADD_USERS`** - OPTIONAL   
+Assign one or more (comma-separated) users or LDAP groups to the application version; accepts user id, entity name or email address. Option is repeatable.
+
+**`SSC_ATTRIBUTES`** - OPTIONAL   
+Set values for one or more attributes. This option accepts a semicolon-separated list of comma-separated list of attribute value assignments.
+*Example*: `SSC_ATTRIBUTES: "Interfaces=Batch Processing Console,GUI;Development Phase=Active Development"`
+
+**`SSC_AUTO_ATTRIBUTES`** - OPTIONAL   
+Automatically set a default value for required application version attributes.
+
+**`SSC_COPY_OPTIONS`** - OPTIONAL   
+Comma separated list of elements to copy (Requires SSC_APPVERSION_FROM). By default, all are copied.
+Allowed values:  AnalysisProcessingRules, VersionAttributes, BugTrackerConfiguration, CustomTags, IssueTemplate, State, UserAccess.
+
+**`SSC_APPVERSION_DELIMITER`** - OPTIONAL   
+Change the default delimiter character when using options that accept "application:version" as an argument or parameter.
+
+**`SSC_APPVERSION_DESCRIPTION`** - OPTIONAL   
+Application version description.
+
+**`SSC_APPVERSION_FROM`** - OPTIONAL   
+Copy FROM application version: id or <application>:<version> name.
+If not provided, <repository>:<base_branch or default_branch> will be used
+
+**`SSC_ISSUE_TEMPLATE`** - OPTIONAL   
+Issue template name or id.
+
+**`SSC_REFRESH`** - OPTIONAL   
+By default, this action will refresh the source application version's metrics when copying from it. Note that for large applications this can lead to an error if the timeout expires.
+
+**`SSC_APPVERSION_SKIP`** - OPTIONAL   
+Skip application version creation if an application version with the specified name already exists.
+
+
+
+
+
+
+<!-- END-INCLUDE:env-ssc-create-appversion.md -->
 
 
 
@@ -154,7 +209,8 @@ Required when authenticating with SSC user credentials.
 Required: ScanCentral SAST Client Authentication Token for authenticating with ScanCentral SAST Controller.
 
 **`EXTRA_SC_SAST_LOGIN_OPTS`** - OPTIONAL    
-Extra ScanCentral SAST login options, for example for disabling SSL checks or changing connection time-outs; see [`fcli sc-sast session login` documentation](https://fortify.github.io/fcli/v2.0.0//manpage/fcli-sc-sast-session-login.html).
+Extra ScanCentral SAST login options, for example for disabling SSL checks or changing connection time-outs; see [`fcli sc-sast session login` documentation](https://fortify.github.io/fcli/v2.0.0/
+/manpage/fcli-sc-sast-session-login.html).
 
 <!-- END-INCLUDE:env-sc-sast-login.md -->
 
@@ -180,7 +236,8 @@ As an example, if the build file that you want to use for packaging doesn't adhe
 
 
 **`EXTRA_SC_SAST_SCAN_OPTS`** - OPTIONAL    
-Extra ScanCentral SAST scan options; see [`fcli sc-sast scan start` documentation](https://fortify.github.io/fcli/v2.0.0//manpage/fcli-sc-sast-scan-start.html)
+Extra ScanCentral SAST scan options; see [`fcli sc-sast scan start` documentation](https://fortify.github.io/fcli/v2.0.0/
+/manpage/fcli-sc-sast-scan-start.html)
 
 
 <!-- START-INCLUDE:env-wait-export.md -->
@@ -209,6 +266,7 @@ The sample workflows below demonstrate how to configure the action for running a
         uses: actions/checkout@v4  
       - name: Run FoD SAST Scan
         uses: fortify/github-action@v1
+
         with:
           sast-scan: true
         env:
@@ -231,14 +289,26 @@ The sample workflows below demonstrate how to configure the action for running a
         uses: actions/checkout@v4  
       - name: Run ScanCentral SAST Scan
         uses: fortify/github-action@v1
+
         with:
           sast-scan: true
         env:
+          # SSC_APPVERSION: MyApp:MyVersion
+          # SSC_APPVERSION_ACTIVE: false
+          # SSC_ADD_USERS: user1,user2@email.com,3
+          SSC_ATTRIBUTES: "Development Phase=Active Development;Development Strategy=Internally Developed;Accessibility=Internal Network Access Required"
+          # SSC_AUTO_ATTRIBUTES: true
+          # SSC_COPY_OPTIONS: AnalysisProcessingRules,VersionAttributes,BugTrackerConfiguration,CustomTags,IssueTemplate,State,UserAccess
+          # SSC_APPVERSION_DELIMITER: ":"
+          # SSC_APPVERSION_DESCRIPTION: Created from Github Worflow
+          # SSC_APPVERSION_FROM: MyApp:master
+          SSC_ISSUE_TEMPLATE: Prioritized High Risk Issue Template
+          # SSC_REFRESH: false
+          SSC_APPVERSION_SKIP: true
           SSC_URL: ${{secrets.SSC_URL}}
           SSC_TOKEN: ${{secrets.SSC_TOKEN}}
           SC_SAST_CLIENT_AUTH_TOKEN: ${{secrets.CLIENT_AUTH_TOKEN}}
           # EXTRA_SC_SAST_LOGIN_OPTS: --socket-timeout=60s
-          # SSC_APPVERSION: MyApp:MyVersion
           # EXTRA_PACKAGE_OPTS: -bf custom-pom.xml
           # DO_WAIT: true
           # DO_EXPORT: true
@@ -314,6 +384,7 @@ The sample workflow below demonstrates how to configure the action for installin
     steps:    
       - name: Setup Fortify tools
         uses: fortify/github-action/setup@v1
+
         with:
           export-path: true
           fcli: latest
@@ -363,6 +434,7 @@ The sample workflow below demonstrates how to configure the action for running a
         uses: actions/checkout@v4  
       - name: Package source code
         uses: fortify/github-action/package@v1
+
         env:
           # EXTRA_PACKAGE_OPTS: -bf custom-pom.xml
 ```
@@ -415,7 +487,8 @@ Required when authenticating with user credentials: FoD tenant, user and passwor
 
 
 **`EXTRA_FOD_LOGIN_OPTS`** - OPTIONAL   
-Extra FoD login options, for example for disabling SSL checks or changing connection time-outs; see [`fcli fod session login` documentation](https://fortify.github.io/fcli/v2.0.0//manpage/fcli-fod-session-login.html)
+Extra FoD login options, for example for disabling SSL checks or changing connection time-outs; see [`fcli fod session login` documentation](https://fortify.github.io/fcli/v2.0.0/
+/manpage/fcli-fod-session-login.html)
 
 <!-- END-INCLUDE:env-fod-login.md -->
 
@@ -445,7 +518,8 @@ As an example, if the build file that you want to use for packaging doesn't adhe
 
 
 **`EXTRA_FOD_SAST_SCAN_OPTS`** - OPTIONAL    
-Extra FoD SAST scan options; see [`fcli fod sast-scan start` documentation](https://fortify.github.io/fcli/v2.0.0//manpage/fcli-fod-sast-scan-start.html)
+Extra FoD SAST scan options; see [`fcli fod sast-scan start` documentation](https://fortify.github.io/fcli/v2.0.0/
+/manpage/fcli-fod-sast-scan-start.html)
 
 
 <!-- START-INCLUDE:env-wait-export.md -->
@@ -457,6 +531,7 @@ By default, this action will not wait until the scan has been completed. To have
 If set to `true`, this action will export scan results to the GitHub Security Code Scanning dashboard. Note that this may require a [GitHub Advanced Security](https://docs.github.com/en/get-started/learning-about-github/about-github-advanced-security) subscription, unless you're running this action on a public github.com repository.
 
 <!-- END-INCLUDE:env-wait-export.md -->
+
 
 
 <!-- END-INCLUDE:env-fod-sast-scan.md -->
@@ -472,6 +547,7 @@ The sample workflow below demonstrates how to configure the action for running a
         uses: actions/checkout@v4  
       - name: Run FoD SAST Scan
         uses: fortify/github-action/fod-sast-scan@v1
+
         env:
           FOD_URL: https://ams.fortify.com
           FOD_TENANT: ${{secrets.FOD_TENANT}}
@@ -531,6 +607,7 @@ The sample workflow below demonstrates how to configure the action for exporting
     steps:    
       - name: Export FoD vulnerability data to GitHub
         uses: fortify/github-action/fod-export@v1
+
         env:
           FOD_URL: https://ams.fortify.com
           FOD_TENANT: ${{secrets.FOD_TENANT}}
@@ -552,6 +629,9 @@ The sample workflow below demonstrates how to configure the action for exporting
 
 This action performs a SAST scan on ScanCentral SAST, consisting of the following steps:
 
+* Setting up fcli and scancentral clients
+* Login to Software Security Center
+* Creates the Application Version if does not exists
 * Login to ScanCentral SAST Controller
 * Package application source code using ScanCentral Client
 * Submit the source code package to be scanned to ScanCentral SAST Controller
@@ -564,6 +644,56 @@ Before running this action, please ensure that the appropriate application versi
 
 
 <!-- START-INCLUDE:env-sc-sast-scan.md -->
+
+
+<!-- START-INCLUDE:env-ssc-create-appversion.md -->
+
+**`SSC_APPVERSION`** - OPTIONAL   
+Application and version name. 
+If not provided, <repository>:<branch> will be used
+
+**`SSC_APPVERSION_ACTIVE`** - OPTIONAL   
+Specify whether application version should be activated (true, default) or not (false).
+
+**`SSC_ADD_USERS`** - OPTIONAL   
+Assign one or more (comma-separated) users or LDAP groups to the application version; accepts user id, entity name or email address. Option is repeatable.
+
+**`SSC_ATTRIBUTES`** - OPTIONAL   
+Set values for one or more attributes. This option accepts a semicolon-separated list of comma-separated list of attribute value assignments.
+*Example*: `SSC_ATTRIBUTES: "Interfaces=Batch Processing Console,GUI;Development Phase=Active Development"`
+
+**`SSC_AUTO_ATTRIBUTES`** - OPTIONAL   
+Automatically set a default value for required application version attributes.
+
+**`SSC_COPY_OPTIONS`** - OPTIONAL   
+Comma separated list of elements to copy (Requires SSC_APPVERSION_FROM). By default, all are copied.
+Allowed values:  AnalysisProcessingRules, VersionAttributes, BugTrackerConfiguration, CustomTags, IssueTemplate, State, UserAccess.
+
+**`SSC_APPVERSION_DELIMITER`** - OPTIONAL   
+Change the default delimiter character when using options that accept "application:version" as an argument or parameter.
+
+**`SSC_APPVERSION_DESCRIPTION`** - OPTIONAL   
+Application version description.
+
+**`SSC_APPVERSION_FROM`** - OPTIONAL   
+Copy FROM application version: id or <application>:<version> name.
+If not provided, <repository>:<base_branch or default_branch> will be used
+
+**`SSC_ISSUE_TEMPLATE`** - OPTIONAL   
+Issue template name or id.
+
+**`SSC_REFRESH`** - OPTIONAL   
+By default, this action will refresh the source application version's metrics when copying from it. Note that for large applications this can lead to an error if the timeout expires.
+
+**`SSC_APPVERSION_SKIP`** - OPTIONAL   
+Skip application version creation if an application version with the specified name already exists.
+
+
+
+
+
+
+<!-- END-INCLUDE:env-ssc-create-appversion.md -->
 
 
 
@@ -588,7 +718,8 @@ Required when authenticating with SSC user credentials.
 Required: ScanCentral SAST Client Authentication Token for authenticating with ScanCentral SAST Controller.
 
 **`EXTRA_SC_SAST_LOGIN_OPTS`** - OPTIONAL    
-Extra ScanCentral SAST login options, for example for disabling SSL checks or changing connection time-outs; see [`fcli sc-sast session login` documentation](https://fortify.github.io/fcli/v2.0.0//manpage/fcli-sc-sast-session-login.html).
+Extra ScanCentral SAST login options, for example for disabling SSL checks or changing connection time-outs; see [`fcli sc-sast session login` documentation](https://fortify.github.io/fcli/v2.0.0/
+/manpage/fcli-sc-sast-session-login.html).
 
 <!-- END-INCLUDE:env-sc-sast-login.md -->
 
@@ -614,7 +745,8 @@ As an example, if the build file that you want to use for packaging doesn't adhe
 
 
 **`EXTRA_SC_SAST_SCAN_OPTS`** - OPTIONAL    
-Extra ScanCentral SAST scan options; see [`fcli sc-sast scan start` documentation](https://fortify.github.io/fcli/v2.0.0//manpage/fcli-sc-sast-scan-start.html)
+Extra ScanCentral SAST scan options; see [`fcli sc-sast scan start` documentation](https://fortify.github.io/fcli/v2.0.0/
+/manpage/fcli-sc-sast-scan-start.html)
 
 
 <!-- START-INCLUDE:env-wait-export.md -->
@@ -641,12 +773,24 @@ The sample workflow below demonstrates how to configure the action for running a
         uses: actions/checkout@v4  
       - name: Run ScanCentral SAST Scan
         uses: fortify/github-action/sc-sast-scan@v1
+
         env:
+          # SSC_APPVERSION: MyApp:MyVersion
+          # SSC_APPVERSION_ACTIVE: false
+          # SSC_ADD_USERS: user1,user2@email.com,3
+          SSC_ATTRIBUTES: "Development Phase=Active Development;Development Strategy=Internally Developed;Accessibility=Internal Network Access Required"
+          # SSC_AUTO_ATTRIBUTES: true
+          # SSC_COPY_OPTIONS: AnalysisProcessingRules,VersionAttributes,BugTrackerConfiguration,CustomTags,IssueTemplate,State,UserAccess
+          # SSC_APPVERSION_DELIMITER: ":"
+          # SSC_APPVERSION_DESCRIPTION: Created from Github Worflow
+          # SSC_APPVERSION_FROM: MyApp:master
+          SSC_ISSUE_TEMPLATE: Prioritized High Risk Issue Template
+          # SSC_REFRESH: false
+          SSC_APPVERSION_SKIP: true
           SSC_URL: ${{secrets.SSC_URL}}
           SSC_TOKEN: ${{secrets.SSC_TOKEN}}
           SC_SAST_CLIENT_AUTH_TOKEN: ${{secrets.CLIENT_AUTH_TOKEN}}
           # EXTRA_SC_SAST_LOGIN_OPTS: --socket-timeout=60s
-          # SSC_APPVERSION: MyApp:MyVersion
           # EXTRA_PACKAGE_OPTS: -bf custom-pom.xml
           # DO_WAIT: true
           # DO_EXPORT: true
@@ -699,6 +843,7 @@ The sample workflow below demonstrates how to configure the action for exporting
     steps:    
       - name: Export SSC vulnerability data to GitHub
         uses: fortify/github-action/ssc-export@v1
+
         env:
           SSC_URL: ${{secrets.SSC_URL}}
           SSC_TOKEN: ${{secrets.SSC_TOKEN}}
@@ -718,7 +863,8 @@ The sample workflow below demonstrates how to configure the action for exporting
 
 The only warranties for products and services of Open Text and its affiliates and licensors (“Open Text”) are as may be set forth in the express warranty statements accompanying such products and services. Nothing herein should be construed as constituting an additional warranty. Open Text shall not be liable for technical or editorial errors or omissions contained herein. The information contained herein is subject to change without notice.
 
-The software is provided "as is" and is not supported through the regular OpenText Support channels. Support requests may be submitted through the [GitHub Issues](https://github.com/fortify/github-action/issues) page for this repository. A (free) GitHub account is required to submit new issues or to comment on existing issues. 
+The software is provided "as is" and is not supported through the regular OpenText Support channels. Support requests may be submitted through the [GitHub Issues](https://github.com/fortify/github-action
+/issues) page for this repository. A (free) GitHub account is required to submit new issues or to comment on existing issues. 
 
 Support requests created through the GitHub Issues page may include bug reports, enhancement requests and general usage questions. Please avoid creating duplicate issues by checking whether there is any existing issue, either open or closed, that already addresses your question, bug or enhancement request. If an issue already exists, please add a comment to provide additional details if applicable.
 

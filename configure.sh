@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/bash
 
 echo "#!/bin/sh" > .git/hooks/pre-commit
 echo './doc-resources/update-repo-docs.sh' >> .git/hooks/pre-commit 

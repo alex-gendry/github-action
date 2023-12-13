@@ -1,3 +1,4 @@
+{{include:env-ssc-create-appversion.md}}
 
 {{include:env-sc-sast-login.md}}
 

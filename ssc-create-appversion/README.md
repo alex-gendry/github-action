@@ -1,5 +1,5 @@
-# fortify/github-action/sc-sast-scan@v1
- 
+# fortify/github-action/ssc-create-appversion@v1
+
 
 
 <!-- START-INCLUDE:p.marketing-intro.md -->
@@ -10,25 +10,11 @@
 
 
 
-<!-- START-INCLUDE:action-sc-sast-scan.md -->
+<!-- START-INCLUDE:action-ssc-create-appversion.md -->
 
-This action performs a SAST scan on ScanCentral SAST, consisting of the following steps:
-
-* Setting up fcli and scancentral clients
-* Login to Software Security Center
-* Creates the Application Version if does not exists
-* Login to ScanCentral SAST Controller
-* Package application source code using ScanCentral Client
-* Submit the source code package to be scanned to ScanCentral SAST Controller
-* Optionally wait for the scan to complete
-* Optionally export scan results to the GitHub Code Scanning dashboard
-
-Before running this action, please ensure that the appropriate application version has been created on SSC. Future versions of this action may add support for automating application version creation.
+This action creates an ApplicationVersion in Fortify Software Security Center.
 
 ### Action environment variable inputs
-
-
-<!-- START-INCLUDE:env-sc-sast-scan.md -->
 
 
 <!-- START-INCLUDE:env-ssc-create-appversion.md -->
@@ -81,73 +67,6 @@ Skip application version creation if an application version with the specified n
 <!-- END-INCLUDE:env-ssc-create-appversion.md -->
 
 
-
-<!-- START-INCLUDE:env-sc-sast-login.md -->
-
-
-<!-- START-INCLUDE:env-ssc-connection.md -->
-
-**`SSC_URL`** - REQUIRED   
-Fortify Software Security Center URL, for example https://ssc.customer.fortifyhosted.net/
-
-**`SSC_TOKEN`** - REQUIRED*   
-Required when authenticating with an SSC token (recommended). Most actions should work fine with a `CIToken`.
-
-**`SSC_USER` & `SSC_PASSWORD`** - REQUIRED*   
-Required when authenticating with SSC user credentials.
-
-<!-- END-INCLUDE:env-ssc-connection.md -->
-
-
-**`SC_SAST_CLIENT_AUTH_TOKEN`** - REQUIRED    
-Required: ScanCentral SAST Client Authentication Token for authenticating with ScanCentral SAST Controller.
-
-**`EXTRA_SC_SAST_LOGIN_OPTS`** - OPTIONAL    
-Extra ScanCentral SAST login options, for example for disabling SSL checks or changing connection time-outs; see [`fcli sc-sast session login` documentation](https://fortify.github.io/fcli/v2.0.0/
-/manpage/fcli-sc-sast-session-login.html).
-
-<!-- END-INCLUDE:env-sc-sast-login.md -->
-
-
-
-<!-- START-INCLUDE:env-ssc-appversion.md -->
-
-**`SSC_APPVERSION`** - OPTIONAL   
-Fortify SSC application version to use with this action. This can be specified either as a numeric application version id, or by providing application and version name in the format `<app-name>:<version-name>`. Default value is [`<github.action_repository>:<github.action_ref>`](https://docs.github.com/en/actions/learn-github-actions/contexts#github-context), for example `myOrg/myRepo:myBranch`.
-
-<!-- END-INCLUDE:env-ssc-appversion.md -->
-
-
-
-<!-- START-INCLUDE:env-package.md -->
-
-**`EXTRA_PACKAGE_OPTS`** - OPTIONAL   
-By default, this action runs `scancentral package -o package.zip` to package application source code. Based on the  automated build tool detection feature provided by ScanCentral Client, this default `scancentral` command is often sufficient. Depending on your build setup, you may however need to configure the `EXTRA_PACKAGE_OPTS` environment variable to specify additional packaging options. 
-
-As an example, if the build file that you want to use for packaging doesn't adhere  to common naming conventions, you can configure the `-bf <custom build file>` option using the `EXTRA_PACKAGE_OPTS` environment variable. See [Command-line options for the package command]({{var:sc-client-doc-base-url#CLI.htm#Package}}) for more information on available options.
-
-<!-- END-INCLUDE:env-package.md -->
-
-
-**`EXTRA_SC_SAST_SCAN_OPTS`** - OPTIONAL    
-Extra ScanCentral SAST scan options; see [`fcli sc-sast scan start` documentation](https://fortify.github.io/fcli/v2.0.0/
-/manpage/fcli-sc-sast-scan-start.html)
-
-
-<!-- START-INCLUDE:env-wait-export.md -->
-
-**`DO_WAIT`** - OPTIONAL    
-By default, this action will not wait until the scan has been completed. To have the workflow wait until the scan has been completed, set the `DO_WAIT` environment variable to `true`. Note that `DO_WAIT` is implied if `DO_EXPORT` is set to `true`; see below.
-
-**`DO_EXPORT`** - OPTIONAL    
-If set to `true`, this action will export scan results to the GitHub Security Code Scanning dashboard. Note that this may require a [GitHub Advanced Security](https://docs.github.com/en/get-started/learning-about-github/about-github-advanced-security) subscription, unless you're running this action on a public github.com repository.
-
-<!-- END-INCLUDE:env-wait-export.md -->
-
-
-<!-- END-INCLUDE:env-sc-sast-scan.md -->
-
-
 ### Sample usage
 
 The sample workflow below demonstrates how to configure the action for running a SAST scan on ScanCentral SAST.
@@ -156,8 +75,8 @@ The sample workflow below demonstrates how to configure the action for running a
     steps:    
       - name: Check out source code
         uses: actions/checkout@v4  
-      - name: Run ScanCentral SAST Scan
-        uses: fortify/github-action/sc-sast-scan@v1
+      - name: Create Application Version in SSC
+        uses: fortify/github-action/ssc-create-appversion@v1
 
         env:
           # SSC_APPVERSION: MyApp:MyVersion
@@ -172,16 +91,9 @@ The sample workflow below demonstrates how to configure the action for running a
           SSC_ISSUE_TEMPLATE: Prioritized High Risk Issue Template
           # SSC_REFRESH: false
           SSC_APPVERSION_SKIP: true
-          SSC_URL: ${{secrets.SSC_URL}}
-          SSC_TOKEN: ${{secrets.SSC_TOKEN}}
-          SC_SAST_CLIENT_AUTH_TOKEN: ${{secrets.CLIENT_AUTH_TOKEN}}
-          # EXTRA_SC_SAST_LOGIN_OPTS: --socket-timeout=60s
-          # EXTRA_PACKAGE_OPTS: -bf custom-pom.xml
-          # DO_WAIT: true
-          # DO_EXPORT: true
 ```
 
-<!-- END-INCLUDE:action-sc-sast-scan.md -->
+<!-- END-INCLUDE:action-ssc-create-appversion.md -->
 
 
 

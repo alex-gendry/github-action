@@ -8,6 +8,9 @@ runs:
     - id: ssc-appversion-create-options
       run: |
         _SSC_APPVERSION_CREATE_OPTS=""
+        if [ -z "$SSC_APPVERSION" ]; then
+          echo "ERROR: SSC_APPVERSION environment variable must be set"; exit 1;
+        fi
         if [ -n "$SSC_APPVERSION_DELIMITER" ]; then
           _SSC_APPVERSION_CREATE_OPTS="${_SSC_APPVERSION_CREATE_OPTS} --delimiter ${SSC_APPVERSION_DELIMITER}"
         fi

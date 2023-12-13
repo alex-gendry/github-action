@@ -1,4 +1,5 @@
-# fortify/github-action/fod-sast-scan@v1 
+# fortify/github-action/fod-sast-scan@v1
+ 
 
 
 <!-- START-INCLUDE:p.marketing-intro.md -->
@@ -48,7 +49,8 @@ Required when authenticating with user credentials: FoD tenant, user and passwor
 
 
 **`EXTRA_FOD_LOGIN_OPTS`** - OPTIONAL   
-Extra FoD login options, for example for disabling SSL checks or changing connection time-outs; see [`fcli fod session login` documentation](https://fortify.github.io/fcli/v2.0.0//manpage/fcli-fod-session-login.html)
+Extra FoD login options, for example for disabling SSL checks or changing connection time-outs; see [`fcli fod session login` documentation](https://fortify.github.io/fcli/v2.0.0/
+/manpage/fcli-fod-session-login.html)
 
 <!-- END-INCLUDE:env-fod-login.md -->
 
@@ -78,7 +80,8 @@ As an example, if the build file that you want to use for packaging doesn't adhe
 
 
 **`EXTRA_FOD_SAST_SCAN_OPTS`** - OPTIONAL    
-Extra FoD SAST scan options; see [`fcli fod sast-scan start` documentation](https://fortify.github.io/fcli/v2.0.0//manpage/fcli-fod-sast-scan-start.html)
+Extra FoD SAST scan options; see [`fcli fod sast-scan start` documentation](https://fortify.github.io/fcli/v2.0.0/
+/manpage/fcli-fod-sast-scan-start.html)
 
 
 <!-- START-INCLUDE:env-wait-export.md -->
@@ -90,6 +93,7 @@ By default, this action will not wait until the scan has been completed. To have
 If set to `true`, this action will export scan results to the GitHub Security Code Scanning dashboard. Note that this may require a [GitHub Advanced Security](https://docs.github.com/en/get-started/learning-about-github/about-github-advanced-security) subscription, unless you're running this action on a public github.com repository.
 
 <!-- END-INCLUDE:env-wait-export.md -->
+
 
 
 <!-- END-INCLUDE:env-fod-sast-scan.md -->
@@ -105,6 +109,7 @@ The sample workflow below demonstrates how to configure the action for running a
         uses: actions/checkout@v4  
       - name: Run FoD SAST Scan
         uses: fortify/github-action/fod-sast-scan@v1
+
         env:
           FOD_URL: https://ams.fortify.com
           FOD_TENANT: ${{secrets.FOD_TENANT}}
@@ -127,7 +132,8 @@ The sample workflow below demonstrates how to configure the action for running a
 
 The only warranties for products and services of Open Text and its affiliates and licensors (“Open Text”) are as may be set forth in the express warranty statements accompanying such products and services. Nothing herein should be construed as constituting an additional warranty. Open Text shall not be liable for technical or editorial errors or omissions contained herein. The information contained herein is subject to change without notice.
 
-The software is provided "as is" and is not supported through the regular OpenText Support channels. Support requests may be submitted through the [GitHub Issues](https://github.com/fortify/github-action/issues) page for this repository. A (free) GitHub account is required to submit new issues or to comment on existing issues. 
+The software is provided "as is" and is not supported through the regular OpenText Support channels. Support requests may be submitted through the [GitHub Issues](https://github.com/fortify/github-action
+/issues) page for this repository. A (free) GitHub account is required to submit new issues or to comment on existing issues. 
 
 Support requests created through the GitHub Issues page may include bug reports, enhancement requests and general usage questions. Please avoid creating duplicate issues by checking whether there is any existing issue, either open or closed, that already addresses your question, bug or enhancement request. If an issue already exists, please add a comment to provide additional details if applicable.
 
