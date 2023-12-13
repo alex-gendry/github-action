@@ -4,13 +4,20 @@ author: 'Fortify'
 runs:
   using: composite
   steps:
-    # Define login options
     - uses: fortify/github-action/internal/set-ssc-var-defaults@main
     - id: ssc-appversion-create-options
       run: |
         _SSC_APPVERSION_CREATE_OPTS=""
         if [ -z "$SSC_APPVERSION" ]; then
           echo "ERROR: SSC_APPVERSION environment variable must be set"; exit 1;
+        fi
+        # If not specified, set default FROM AppVersion to octocat/Hello-World:<base_branch or default-branch>
+        if [ -z "$SSC_APPVERSION_FROM" ]; then 
+          if [ -n "$GITHUB_BASE_REF" ]; then
+            echo SSC_APPVERSION_FROM="${GITHUB_REPOSITORY}:${GITHUB_BASE_REF}" >> $GITHUB_ENV
+          elif [ -n "$REPO_DEFAULT_BRANCH" ]; then
+            echo SSC_APPVERSION_FROM="${GITHUB_REPOSITORY}:${REPO_DEFAULT_BRANCH}" >> $GITHUB_ENV
+          fi
         fi
         if [ -n "$SSC_APPVERSION_DELIMITER" ]; then
           _SSC_APPVERSION_CREATE_OPTS="${_SSC_APPVERSION_CREATE_OPTS} --delimiter ${SSC_APPVERSION_DELIMITER}"
