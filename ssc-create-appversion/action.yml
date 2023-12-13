@@ -4,7 +4,7 @@ author: 'Fortify'
 runs:
   using: composite
   steps:
-    - uses: fortify/github-action/internal/set-ssc-var-defaults@main
+    - uses: alex-gendry/github-action/internal/set-ssc-var-defaults@feat/create-app-version
     - id: ssc-appversion-create-options
       run: |
         _SSC_APPVERSION_CREATE_OPTS=""
