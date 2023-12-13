@@ -13,15 +13,16 @@ runs:
       env:
         APP: ${{ github.repository }}
         V: ${{ github.head_ref || github.ref_name }}
-    - if: ${{ !env.SSC_APPVERSION }}
+    - if: ${{ !env.SSC_APPVERSION_FROM }}
       run: |
-        export SSC_APPVERSION="${APP}:${V}"
-        echo SSC_APPVERSION=$SSC_APPVERSION >> $GITHUB_ENV
-        echo "Configured default value for SSC_APPVERSION: ${SSC_APPVERSION}"
+        # If not specified, set default FROM AppVersion to octocat/Hello-World:<base_branch or default-branch>
+        export SSC_APPVERSION_FROM="${APP}:${V}"
+        echo SSC_APPVERSION_FROM=$SSC_APPVERSION_FROM >> $GITHUB_ENV
+        echo "Configured default value for SSC_APPVERSION_FROM: ${SSC_APPVERSION_FROM}"
       shell: bash
       env:
         APP: ${{ github.repository }}
-        V: ${{ github.head_ref || github.ref_name }}
+        V: ${{ github.event.repository.default_branch || github.base_ref }}
                 
 branding:
   icon: 'shield'
