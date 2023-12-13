@@ -14,7 +14,7 @@ runs:
     - uses: fortify/github-action/package@main
     - run: |
         if [ -z "$SC_SAST_SENSOR_VERSION" ]; then 
-          echo $SC_SAST_SENSOR_VERSION=23.1 >> $GITHUB_ENV
+          echo $SC_SAST_SENSOR_VERSION="23.1" >> $GITHUB_ENV
         fi
       shell: bash
     - uses: fortify/github-action/internal/run@main
