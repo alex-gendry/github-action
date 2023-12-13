@@ -5,6 +5,7 @@ runs:
   using: composite
   steps:
     # Define login options
+    - uses: fortify/github-action/internal/set-ssc-var-defaults@main
     - id: ssc-appversion-create-options
       run: |
         _SSC_APPVERSION_CREATE_OPTS=""
